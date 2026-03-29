@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>臺服玩家聚集地｜摩爾莊園手遊陸服</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #4caf82;
+      --green-light: #a8d5b8;
+      --green-pale: #e8f5ee;
+      --amber: #f4a03a;
+      --amber-light: #fde8c0;
+      --earth: #7a5c3a;
+      --sky: #c9eaf5;
+      --text: #2e3a2f;
+      --text-soft: #5a6b5c;
+      --bg: #f7faf8;
+      --white: #ffffff;
+      --shadow: 0 4px 24px rgba(76,175,130,0.10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'Noto Serif TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 2px solid var(--green-pale);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      height: 68px;
+      box-shadow: 0 2px 16px rgba(76,175,130,0.08);
+    }
+
+    .site-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--green);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .site-title span.emoji { font-size: 1.4rem; }
+
+    nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    nav button {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.45rem 1.1rem;
+      border: 2px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      background: none;
+      color: var(--text-soft);
+      transition: all 0.18s ease;
+    }
+
+    nav button:hover {
+      background: var(--green-pale);
+      color: var(--green);
+    }
+
+    nav button.active {
+      background: var(--green);
+      color: var(--white);
+      border-color: var(--green);
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; animation: fadeIn 0.35s ease; }
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(145deg, #e8f5ee 0%, #c9eaf5 60%, #fde8c0 100%);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(76,175,130,0.13) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(244,160,58,0.10) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--amber-light);
+      color: var(--earth);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--green);
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--white);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 0.75rem 1.8rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.18s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(76,175,130,0.25);
+    }
+
+    .btn-primary:hover { background: #3a9a6e; transform: translateY(-2px); }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--green);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 1.8rem;
+      border: 2px solid var(--green);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.18s;
+    }
+
+    .btn-secondary:hover { background: var(--green-pale); }
+
+    /* ── SECTION ── */
+    section {
+      max-width: 860px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.4rem;
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--green-pale);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(76,175,130,0.15); }
+
+    .card-icon { font-size: 2rem; margin-bottom: 0.7rem; }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      line-height: 1.65;
+    }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.8rem 2rem;
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--green-pale);
+      margin-bottom: 1.5rem;
+    }
+
+    .info-box h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-box p, .info-box li {
+      font-size: 0.93rem;
+      color: var(--text-soft);
+      line-height: 1.85;
+    }
+
+    .info-box ul { padding-left: 1.2rem; }
+
+    .info-box a {
+      color: var(--green);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .info-box a:hover { text-decoration: underline; }
+
+    /* ── TOWN HIGHLIGHT ── */
+    .town-highlight {
+      background: linear-gradient(135deg, #e8f5ee, #c9eaf5);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      border: 1.5px solid var(--green-light);
+      margin-bottom: 2rem;
+    }
+
+    .town-highlight .town-name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+
+    .town-highlight .town-id {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .town-highlight .town-id span {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 0.2rem 0.7rem;
+      color: var(--green);
+      font-weight: 800;
+      margin-left: 0.4rem;
+    }
+
+    /* ── GUIDE PAGE ── */
+    .guide-hero {
+      background: linear-gradient(135deg, #e8f5ee, #fde8c0);
+      padding: 3.5rem 2rem 2.5rem;
+      text-align: center;
+    }
+
+    .guide-hero h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.7rem;
+    }
+
+    .guide-hero p {
+      color: var(--text-soft);
+      font-size: 0.97rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    .step-block {
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+    }
+
+    .step-num {
+      min-width: 36px;
+      height: 36px;
+      background: var(--green);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content h4 {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+
+    .step-content p, .step-content li {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.8;
+    }
+
+    .step-content ul { padding-left: 1.1rem; }
+
+    /* ── TABLE ── */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .styled-table th {
+      background: var(--green-pale);
+      color: var(--text);
+      font-weight: 700;
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--green-light);
+    }
+
+    .styled-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--green-pale);
+      color: var(--text-soft);
+    }
+
+    .styled-table tr:last-child td { border-bottom: none; }
+
+    /* ── WARNING BOX ── */
+    .warn-box {
+      background: #fff8ed;
+      border: 1.5px solid #f4d08a;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      font-size: 0.9rem;
+      color: #7a5c1a;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .warn-box strong { color: #b87a10; }
+
+    /* ── IMAGE ── */
+    .guide-img {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 12px;
+      margin: 0.8rem auto 1.2rem;
+      display: block;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+      border: 1.5px solid var(--green-pale);
+    }
+
+    /* ── FAQ ── */
+    .faq-item {
+      border-bottom: 1px solid var(--green-pale);
+      padding: 1rem 0;
+    }
+
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-q {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+      font-size: 0.97rem;
+    }
+
+    .faq-a {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.75;
+    }
+
+    /* ── LINKS TABLE ── */
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .link-chip {
+      background: var(--white);
+      border: 1.5px solid var(--green-pale);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.18s;
+    }
+
+    .link-chip:hover {
+      background: var(--green-pale);
+      border-color: var(--green);
+      color: var(--green);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-soft);
+      font-size: 0.83rem;
+      border-top: 1.5px solid var(--green-pale);
+      margin-top: 3rem;
+    }
+
+    footer a { color: var(--green); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      header { padding: 0 1rem; }
+      .site-title { font-size: 0.95rem; }
+      nav button { font-size: 0.82rem; padding: 0.4rem 0.8rem; }
+      .hero { padding: 3.5rem 1.2rem 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="site-title">
+    <span class="emoji">🏡</span>
+    臺服玩家聚集地
+  </div>
+  <nav>
+    <button class="active" onclick="showPage('home', this)">首頁</button>
+    <button onclick="showPage('guide', this)">如何前往陸服</button>
+  </nav>
+</header>
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">🌟 摩爾莊園手遊 · 陸服官服</div>
+    <h1>歡迎來到<br><em>臺服玩家聚集地</em></h1>
+    <p>台服已於 2025 年 6 月關服，<br>但摩爾人的故事還沒結束。<br>我們在陸服重新紮根，等你回來。</p>
+    <div class="hero-actions">
+      <a href="https://line.me/ti/g2/Gu_e4m2RFN_SsvfX0uDQ7D2qrLsa94RfRyXH4A?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+         class="btn-primary" target="_blank" rel="noopener">
+        💬 加入 LINE 社群
+      </a>
+      <button class="btn-secondary" onclick="showPage('guide', document.querySelectorAll('nav button')[1])">
+        📖 前往陸服教學
+      </button>
+    </div>
+  </div>
+
+  <!-- Town Info -->
+  <section>
+    <div class="section-label">我們的小鎮</div>
+    <div class="section-title">找到屬於台服玩家的家</div>
+
+    <div class="town-highlight">
+      <div class="town-name">🏘️ 臺服玩家聚集地</div>
+      <div class="town-id">小鎮 ID <span>3491348</span></div>
+    </div>
+
+    <img src="images/92d.png" alt="小鎮示意圖" class="guide-img" />
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🌱</div>
+        <h3>台灣玩家為主</h3>
+        <p>小鎮以台服流亡玩家為核心，語言相通、文化相近，無需適應陌生環境。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>希望你常上線</h3>
+        <p>我們最需要的不是完美的玩家，而是會穩定出現的夥伴，一起讓小鎮熱鬧起來。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <h3>社群互助</h3>
+        <p>LINE 社群隨時有人可以問，帳號取得、登入問題都能在社群裡獲得協助。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <h3>陸服內容更完整</h3>
+        <p>陸服版本更新更快、內容更豐富，值得重新投入，繼續你的摩爾旅程。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Steps -->
+  <section>
+    <div class="section-label">快速了解</div>
+    <div class="section-title">四步驟加入我們</div>
+    <div class="info-box">
+      <div class="step-block">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>下載遊戲</h4>
+          <p>安卓透過 TapTap 或官方 APK；iOS 需切換至中國區 App Store 下載。</p>
+        </div>
+      </div>
+      <div class="step-block">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>取得陸服帳號</h4>
+          <p>加入 LINE 社群詢問多餘帳號，或至 8591、蝦皮等平台購買。</p>
+        </div>
+      </div>
+      <div class="step-block">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>以米米號登入</h4>
+          <p>開啟遊戲後選「米米號登錄」，切勿輸入手機號碼。</p>
+        </div>
+      </div>
+      <div class="step-block">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>搜尋小鎮 ID 加入</h4>
+          <p>進入遊戲後，搜尋小鎮 ID <strong>3491348</strong> 找到我們的聚集地。</p>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top: 1rem;">
+      <button class="btn-primary" onclick="showPage('guide', document.querySelectorAll('nav button')[1])">
+        查看完整圖文教學 →
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════ GUIDE PAGE ══════════ -->
+<div id="page-guide" class="page">
+
+  <div class="guide-hero">
+    <h1>🎮 前往陸服完整攻略</h1>
+    <p>台灣玩家轉戰陸版《摩爾莊園手遊》官服<br>從下載到登入，一步一步帶你完成</p>
+    <p style="margin-top:0.6rem; font-size:0.8rem; color:#888;">原作者：翰翰xx ｜ 重編：流亡的摩爾王 ｜ 感謝：凱莉萌萌</p>
+  </div>
+
+  <section>
+
+    <!-- 三大核心問題 -->
+    <div class="section-label">出發前先了解</div>
+    <div class="section-title">三大核心問題</div>
+    <div class="info-box">
+      <table class="styled-table">
+        <thead>
+          <tr><th>問題</th><th>解決方案</th><th>難度</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>如何取得陸版帳號？</td><td>加入社群求助或購買</td><td>⭐⭐</td></tr>
+          <tr><td>儲值困難嗎？</td><td>透過其他渠道代儲（請斟酌）</td><td>⭐⭐⭐</td></tr>
+          <tr><td>網速會很慢嗎？</td><td>實測與台版差異不大</td><td>⭐</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 下載 -->
+    <div class="section-label" style="margin-top:2.5rem;">STEP 1</div>
+    <div class="section-title">下載遊戲</div>
+
+    <img src="images/91hole.png" alt="整體流程圖" class="guide-img" />
+
+    <div class="info-box">
+      <h3>🤖 安卓系統（手機 / 模擬器）</h3>
+
+      <div class="step-block">
+        <div class="step-num">A</div>
+        <div class="step-content">
+          <h4>透過 TapTap 下載（推薦）</h4>
+          <ul>
+            <li>前往 <a href="https://l.tapdb.net/uX80vNvc?channel=rep-rep_u7wkl7ht9mh" target="_blank">TapTap 官網</a>，點選右下角「下載」</li>
+            <li>手機掃描 QR Code ／電腦下載安裝檔</li>
+            <li>註冊 TapTap 帳號</li>
+            <li>搜尋「摩爾莊園」並安裝</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">B</div>
+        <div class="step-content">
+          <h4>直接下載官方 APK</h4>
+          <p>前往 <a href="http://e.61.com/d/59" target="_blank">官方下載點</a>，點擊 APK 直接安裝</p>
+        </div>
+      </div>
+
+      <div style="background:var(--green-pale); border-radius:10px; padding:0.9rem 1rem; margin-top:0.8rem; font-size:0.88rem; color:var(--text-soft);">
+        <strong>推薦模擬器：</strong> BlueStacks、雷電模擬器｜將 APK 拖入後直接點擊安裝
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>🍎 iOS 系統（蘋果手機）</h3>
+      <img src="images/91apple.png" alt="iOS 跨區下載流程" class="guide-img" />
+      <div class="warn-box">
+        ⚠️ 下載完成後請切回台灣區帳號。切換前請確認無未完成的訂閱項目。
+      </div>
+      <p>詳細 iOS 跨區教學可參考：<a href="https://www.jyes.com.tw/news.php?act=view&id=2675" target="_blank">跨區下載教學</a></p>
+    </div>
+
+    <!-- 帳號 -->
+    <div class="section-label" style="margin-top:2.5rem;">STEP 2</div>
+    <div class="section-title">取得陸服帳號</div>
+
+    <div class="warn-box">
+      <strong>⚠️ 為什麼需要特別取得帳號？</strong><br>
+      陸版採實名制 + 中國門號驗證，台灣門號無法直接註冊。
+    </div>
+
+    <img src="images/91account.png" alt="帳號取得流程" class="guide-img" />
+
+    <div class="info-box">
+      <h3>⭐ 方法一：加入社群詢問（推薦）</h3>
+      <p>在 LINE 社群「摩爾莊園手遊陸服的臺服玩家聚集地」中禮貌說明來意，如有玩家有多餘帳號，可能可以免費提供。</p>
+    </div>
+
+    <div class="info-box">
+      <h3>💳 方法二：購買帳號</h3>
+      <ul>
+        <li>平台：8591 網、淘寶、蝦皮等</li>
+        <li>價格：依平台與賣家而定</li>
+        <li>購買後可立即登入</li>
+      </ul>
+    </div>
+
+    <!-- 登入 -->
+    <div class="section-label" style="margin-top:2.5rem;">STEP 3</div>
+    <div class="section-title">登入遊戲</div>
+
+    <img src="images/9enter.png" alt="登入流程" class="guide-img" />
+    <img src="images/92b.png" alt="進入遊戲示意" class="guide-img" />
+
+    <div class="info-box">
+      <h3>🎮 登入步驟</h3>
+      <div class="step-block">
+        <div class="step-num">1</div>
+        <div class="step-content"><p>開啟遊戲，點擊「進入遊戲」</p></div>
+      </div>
+      <img src="images/92c.png" alt="米米號登錄說明" class="guide-img" />
+      <div class="step-block">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>選擇「米米號登錄」</h4>
+          <p><strong>請不要輸入手機號碼</strong>，點選下方的「米米號登錄」，並勾選最下方的「我已仔細閱讀…」</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 儲值 -->
+    <div class="section-label" style="margin-top:2.5rem;">補充說明</div>
+    <div class="section-title">儲值方式</div>
+    <div class="info-box">
+      <h3>💰 關於代儲</h3>
+      <p>我們<strong>不推薦代儲</strong>，這有不小的風險。若仍有需求，請注意：</p>
+      <ul style="margin-top:0.6rem;">
+        <li>找有信譽的商家</li>
+        <li>確認幣種為「金豆」</li>
+        <li>首次建議小額測試</li>
+      </ul>
+      <p style="margin-top:0.6rem;">不儲值也能正常遊玩，不影響基本遊戲體驗。</p>
+    </div>
+
+    <!-- 社群 -->
+    <div class="section-label" style="margin-top:2.5rem;">加入我們</div>
+    <div class="section-title">社群資源</div>
+    <div class="info-box">
+      <h3>💬 LINE 群組</h3>
+      <p style="margin-bottom:1rem;">社群名稱：「摩爾莊園手遊陸服的臺服玩家聚集地」</p>
+      <a href="https://line.me/ti/g2/Gu_e4m2RFN_SsvfX0uDQ7D2qrLsa94RfRyXH4A?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+         class="btn-primary" target="_blank" rel="noopener" style="display:inline-flex;">
+        💬 點此加入 LINE 社群
+      </a>
+      <p style="margin-top:1rem; font-size:0.88rem;">此社群提供問題解答、帳號協助、系統教學</p>
+    </div>
+
+    <div class="info-box">
+      <h3>🏘️ 小鎮資訊</h3>
+      <p><strong>小鎮名稱：</strong>臺服玩家聚集地</p>
+      <p><strong>小鎮 ID：</strong>3491348</p>
+      <img src="images/92d.png" alt="小鎮資訊" class="guide-img" />
+    </div>
+
+    <!-- FAQ -->
+    <div class="section-label" style="margin-top:2.5rem;">FAQ</div>
+    <div class="section-title">常見問題</div>
+    <div class="info-box">
+      <div class="faq-item">
+        <div class="faq-q">Q：一定要購買帳號嗎？</div>
+        <div class="faq-a">不一定，可詢問社群裡是否有玩家仍有多餘的帳號。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q：不儲值能玩嗎？</div>
+        <div class="faq-a">可以，不影響遊戲體驗。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q：渠道服跟官服差在哪？</div>
+        <div class="faq-a">渠道服另有說明，詳見：<a href="https://hackmd.io/@XM5CfnNQT9uV6ZNQXF9V0A/BJw5TI3Lbl" target="_blank">渠道服攻略</a></div>
+      </div>
+    </div>
+
+    <!-- 重要連結 -->
+    <div class="section-label" style="margin-top:2.5rem;">快速連結</div>
+    <div class="section-title">重要連結整理</div>
+    <div class="link-grid">
+      <a href="https://l.tapdb.net/uX80vNvc?channel=rep-rep_u7wkl7ht9mh" target="_blank" class="link-chip">📱 TapTap 官網</a>
+      <a href="http://e.61.com/d/59" target="_blank" class="link-chip">📦 官方 APK 下載</a>
+      <a href="https://www.bluestacks.com/" target="_blank" class="link-chip">💻 BlueStacks 模擬器</a>
+      <a href="https://www.jyes.com.tw/news.php?act=view&id=2675" target="_blank" class="link-chip">🍎 iOS 跨區教學</a>
+      <a href="https://line.me/ti/g2/Gu_e4m2RFN_SsvfX0uDQ7D2qrLsa94RfRyXH4A?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="link-chip">💬 LINE 社群</a>
+      <a href="https://hackmd.io/@XM5CfnNQT9uV6ZNQXF9V0A/BJw5TI3Lbl" target="_blank" class="link-chip">📄 渠道服攻略</a>
+    </div>
+
+    <!-- End image -->
+    <img src="images/92e.png" alt="結語圖" class="guide-img" style="margin-top:2.5rem;" />
+    <p style="text-align:center; color:var(--text-soft); font-size:0.88rem; margin-top:0.5rem;">祝各位摩爾們遊戲愉快！🌟</p>
+    <p style="text-align:center; color:#aaa; font-size:0.78rem; margin-top:0.3rem;">最後更新：2025 / 02 / 1</p>
+
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>臺服玩家聚集地 · 摩爾莊園手遊陸服 · 小鎮 ID <strong>3491348</strong></p>
+  <p style="margin-top:0.3rem;">
+    <a href="https://line.me/ti/g2/Gu_e4m2RFN_SsvfX0uDQ7D2qrLsa94RfRyXH4A?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank">加入 LINE 社群</a>
+    　｜　原作者：翰翰xx ｜ 重編：流亡的摩爾王
+  </p>
+</footer>
+
+<script>
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
